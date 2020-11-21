@@ -1,0 +1,546 @@
+<Activity mc:Ignorable="sap sap2010" x:Class="InputExpenseReport" xmlns="http://schemas.microsoft.com/netfx/2009/xaml/activities" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:mva="clr-namespace:Microsoft.VisualBasic.Activities;assembly=System.Activities" xmlns:s="clr-namespace:System;assembly=mscorlib" xmlns:sap="http://schemas.microsoft.com/netfx/2009/xaml/activities/presentation" xmlns:sap2010="http://schemas.microsoft.com/netfx/2010/xaml/activities/presentation" xmlns:scg="clr-namespace:System.Collections.Generic;assembly=mscorlib" xmlns:sd="clr-namespace:System.Data;assembly=System.Data" xmlns:ui="http://schemas.uipath.com/workflow/activities" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+  <x:Members>
+    <x:Property Name="in_Config" Type="InArgument(scg:Dictionary(x:String, x:Object))" />
+    <x:Property Name="in_TransactionItem" Type="InArgument(sd:DataRow)" />
+  </x:Members>
+  <mva:VisualBasic.Settings>
+    <x:Null />
+  </mva:VisualBasic.Settings>
+  <sap:VirtualizedContainerService.HintSize>1706,6948</sap:VirtualizedContainerService.HintSize>
+  <sap2010:WorkflowViewState.IdRef>InputExpenseReport_1</sap2010:WorkflowViewState.IdRef>
+  <TextExpression.NamespacesForImplementation>
+    <scg:List x:TypeArguments="x:String" Capacity="24">
+      <x:String>System.Activities</x:String>
+      <x:String>System.Activities.Statements</x:String>
+      <x:String>System.Activities.Expressions</x:String>
+      <x:String>System.Activities.Validation</x:String>
+      <x:String>System.Activities.XamlIntegration</x:String>
+      <x:String>Microsoft.VisualBasic</x:String>
+      <x:String>Microsoft.VisualBasic.Activities</x:String>
+      <x:String>System</x:String>
+      <x:String>System.Collections</x:String>
+      <x:String>System.Collections.Generic</x:String>
+      <x:String>System.Data</x:String>
+      <x:String>System.Diagnostics</x:String>
+      <x:String>System.Drawing</x:String>
+      <x:String>System.IO</x:String>
+      <x:String>System.Linq</x:String>
+      <x:String>System.Net.Mail</x:String>
+      <x:String>System.Xml</x:String>
+      <x:String>System.Xml.Linq</x:String>
+      <x:String>UiPath.Core</x:String>
+      <x:String>UiPath.Core.Activities</x:String>
+      <x:String>System.Windows.Markup</x:String>
+      <x:String>System.Xml.Serialization</x:String>
+      <x:String>UiPath.Excel</x:String>
+      <x:String>Microsoft.VisualBasic.CompilerServices</x:String>
+    </scg:List>
+  </TextExpression.NamespacesForImplementation>
+  <TextExpression.ReferencesForImplementation>
+    <scg:List x:TypeArguments="AssemblyReference" Capacity="21">
+      <AssemblyReference>System.Activities</AssemblyReference>
+      <AssemblyReference>Microsoft.VisualBasic</AssemblyReference>
+      <AssemblyReference>mscorlib</AssemblyReference>
+      <AssemblyReference>System.Data</AssemblyReference>
+      <AssemblyReference>System.Data.DataSetExtensions</AssemblyReference>
+      <AssemblyReference>System</AssemblyReference>
+      <AssemblyReference>System.Drawing</AssemblyReference>
+      <AssemblyReference>System.Core</AssemblyReference>
+      <AssemblyReference>System.Xml</AssemblyReference>
+      <AssemblyReference>System.Xml.Linq</AssemblyReference>
+      <AssemblyReference>PresentationFramework</AssemblyReference>
+      <AssemblyReference>WindowsBase</AssemblyReference>
+      <AssemblyReference>PresentationCore</AssemblyReference>
+      <AssemblyReference>System.Xaml</AssemblyReference>
+      <AssemblyReference>UiPath.System.Activities</AssemblyReference>
+      <AssemblyReference>UiPath.UiAutomation.Activities</AssemblyReference>
+      <AssemblyReference>System.ServiceModel</AssemblyReference>
+      <AssemblyReference>System.ValueTuple</AssemblyReference>
+      <AssemblyReference>System.ComponentModel.Composition</AssemblyReference>
+      <AssemblyReference>UiPath.Excel.Activities</AssemblyReference>
+      <AssemblyReference>System.Runtime.WindowsRuntime</AssemblyReference>
+    </scg:List>
+  </TextExpression.ReferencesForImplementation>
+  <Sequence DisplayName="InputExpenseReport" sap:VirtualizedContainerService.HintSize="1686,6888" sap2010:WorkflowViewState.IdRef="Sequence_1">
+    <Sequence.Variables>
+      <Variable x:TypeArguments="sd:DataTable" Name="AccSumDT" />
+      <Variable x:TypeArguments="sd:DataTable" Name="RowCountDT" />
+      <Variable x:TypeArguments="sd:DataTable" Name="FilterAccSumDT" />
+      <Variable x:TypeArguments="sd:DataTable" Name="MonthRowDT" />
+      <Variable x:TypeArguments="x:String" sap2010:Annotation.AnnotationText="Template sheet of expense report" Name="FileTemplate" />
+      <Variable x:TypeArguments="s:DateTime" Name="reportMonth" />
+      <Variable x:TypeArguments="x:String" Name="FileTemplateCopy" />
+      <Variable x:TypeArguments="x:String" Name="MoveTemplate" />
+    </Sequence.Variables>
+    <sap:WorkflowViewStateService.ViewState>
+      <scg:Dictionary x:TypeArguments="x:String, x:Object">
+        <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+      </scg:Dictionary>
+    </sap:WorkflowViewStateService.ViewState>
+    <ui:LogMessage DisplayName="Log Message" sap:VirtualizedContainerService.HintSize="1644,91" sap2010:WorkflowViewState.IdRef="LogMessage_1" Level="Info" Message="[&quot;Input Expense report processing...&quot;]" />
+    <Assign DisplayName="Assign Report Month" sap:VirtualizedContainerService.HintSize="1644,60" sap2010:WorkflowViewState.IdRef="Assign_3">
+      <Assign.To>
+        <OutArgument x:TypeArguments="s:DateTime">[reportMonth]</OutArgument>
+      </Assign.To>
+      <Assign.Value>
+        <InArgument x:TypeArguments="s:DateTime">[Now.AddMonths(-1).AddDays(-1)]</InArgument>
+      </Assign.Value>
+    </Assign>
+    <ui:ReadCsvFile Encoding="{x:Null}" DataTable="[AccSumDT]" Delimitator="Comma" DisplayName="Read Account Balance Summary DT" FilePath="[in_Config(&quot;Criteria_Report&quot;).ToString]" sap:VirtualizedContainerService.HintSize="1644,59" sap2010:WorkflowViewState.IdRef="ReadCsvFile_1" />
+    <ui:ForEachRow CurrentIndex="{x:Null}" DataTable="[AccSumDT]" DisplayName="For Each Row &lt;Get UpperCase&gt;" sap:VirtualizedContainerService.HintSize="1644,300" sap2010:WorkflowViewState.IdRef="ForEachRow_3">
+      <ui:ForEachRow.Body>
+        <ActivityAction x:TypeArguments="sd:DataRow">
+          <ActivityAction.Argument>
+            <DelegateInArgument x:TypeArguments="sd:DataRow" Name="row" />
+          </ActivityAction.Argument>
+          <Sequence DisplayName="Body" sap:VirtualizedContainerService.HintSize="304,152" sap2010:WorkflowViewState.IdRef="Sequence_16">
+            <sap:WorkflowViewStateService.ViewState>
+              <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+              </scg:Dictionary>
+            </sap:WorkflowViewStateService.ViewState>
+            <Assign sap:VirtualizedContainerService.HintSize="262,60" sap2010:WorkflowViewState.IdRef="Assign_8">
+              <Assign.To>
+                <OutArgument x:TypeArguments="x:Object">[row("Sub-CC")]</OutArgument>
+              </Assign.To>
+              <Assign.Value>
+                <InArgument x:TypeArguments="x:Object">[row("Sub-CC").ToString.ToUpper]</InArgument>
+              </Assign.Value>
+            </Assign>
+          </Sequence>
+        </ActivityAction>
+      </ui:ForEachRow.Body>
+    </ui:ForEachRow>
+    <Sequence DisplayName="Copy file for BackUp" sap:VirtualizedContainerService.HintSize="1644,2641" sap2010:WorkflowViewState.IdRef="Sequence_20">
+      <Sequence.Variables>
+        <Variable x:TypeArguments="x:Boolean" Name="BackUpExists" />
+      </Sequence.Variables>
+      <sap:WorkflowViewStateService.ViewState>
+        <scg:Dictionary x:TypeArguments="x:String, x:Object">
+          <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+          <x:Boolean x:Key="IsPinned">False</x:Boolean>
+        </scg:Dictionary>
+      </sap:WorkflowViewStateService.ViewState>
+      <ui:PathExists DisplayName="Path Exists" Exists="[BackUpExists]" sap:VirtualizedContainerService.HintSize="1038,89" sap2010:WorkflowViewState.IdRef="PathExists_2" Path="[Path.Combine(in_Config(&quot;Templates_BackUp&quot;).ToString, Now.Year.ToString(&quot;yyyy&quot;))]" PathType="Folder" />
+      <If Condition="[BackUpExists]" DisplayName="If have folder for year" sap:VirtualizedContainerService.HintSize="1038,208" sap2010:WorkflowViewState.IdRef="If_9">
+        <If.Else>
+          <ui:CreateDirectory ContinueOnError="{x:Null}" DisplayName="Create Directory" sap:VirtualizedContainerService.HintSize="200,22" sap2010:WorkflowViewState.IdRef="CreateDirectory_2" Path="[Path.Combine(in_Config(&quot;Templates_BackUp&quot;).ToString, Now.ToString(&quot;yyyy&quot;))]" />
+        </If.Else>
+      </If>
+      <If Condition="[Directory.GetFiles(Path.Combine(in_Config(&quot;Templates_BackUp&quot;).ToString, Now.AddMonths(-1).AddDays(-1).ToString(&quot;yyyy&quot;)), in_TransactionItem(&quot;Template&quot;).ToString).Count &gt;=1]" DisplayName="If find old template file in BackUp" sap:VirtualizedContainerService.HintSize="1038,548" sap2010:WorkflowViewState.IdRef="If_12">
+        <sap:WorkflowViewStateService.ViewState>
+          <scg:Dictionary x:TypeArguments="x:String, x:Object">
+            <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+            <x:Boolean x:Key="IsPinned">False</x:Boolean>
+          </scg:Dictionary>
+        </sap:WorkflowViewStateService.ViewState>
+        <If.Then>
+          <Sequence DisplayName="Move to Template" sap:VirtualizedContainerService.HintSize="526,400" sap2010:WorkflowViewState.IdRef="Sequence_22">
+            <sap:WorkflowViewStateService.ViewState>
+              <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+              </scg:Dictionary>
+            </sap:WorkflowViewStateService.ViewState>
+            <Assign DisplayName="Assign to MoveTemplate" sap:VirtualizedContainerService.HintSize="484,60" sap2010:WorkflowViewState.IdRef="Assign_11">
+              <Assign.To>
+                <OutArgument x:TypeArguments="x:String">[MoveTemplate]</OutArgument>
+              </Assign.To>
+              <Assign.Value>
+                <InArgument x:TypeArguments="x:String">[Directory.GetFiles(Path.Combine(in_Config("Templates_BackUp").ToString,Now.AddMonths(-1).AddDays(-1).ToString("yyyy")), in_TransactionItem("Template").ToString).First]</InArgument>
+              </Assign.Value>
+            </Assign>
+            <If Condition="[File.GetLastWriteTime(MoveTemplate).ToString(&quot;MM&quot;) &lt; Now.ToString(&quot;MM&quot;)]" DisplayName="If File in BackUp less than Now more than 1 month" sap:VirtualizedContainerService.HintSize="484,208" sap2010:WorkflowViewState.IdRef="If_13">
+              <If.Then>
+                <ui:MoveFile ContinueOnError="{x:Null}" Destination="[Path.Combine(in_Config(&quot;Templates&quot;).ToString, in_TransactionItem(&quot;Template&quot;).ToString)]" DisplayName="Move File to Template" sap:VirtualizedContainerService.HintSize="200,22" sap2010:WorkflowViewState.IdRef="MoveFile_3" Overwrite="True" Path="[MoveTemplate]" />
+              </If.Then>
+            </If>
+          </Sequence>
+        </If.Then>
+      </If>
+      <If Condition="[Directory.GetFiles(in_Config(&quot;Templates&quot;).ToString, in_TransactionItem(&quot;Template&quot;).ToString).Count &gt;=1]" DisplayName="If find template file" sap:VirtualizedContainerService.HintSize="1038,208" sap2010:WorkflowViewState.IdRef="If_1">
+        <If.Then>
+          <Assign DisplayName="Assign to Template" sap:VirtualizedContainerService.HintSize="262,60" sap2010:WorkflowViewState.IdRef="Assign_1">
+            <Assign.To>
+              <OutArgument x:TypeArguments="x:String">[FileTemplate]</OutArgument>
+            </Assign.To>
+            <Assign.Value>
+              <InArgument x:TypeArguments="x:String">[Directory.GetFiles(in_Config("Templates").ToString, in_TransactionItem("Template").ToString).First]</InArgument>
+            </Assign.Value>
+          </Assign>
+        </If.Then>
+        <If.Else>
+          <Throw DisplayName="Throw Business Exception" Exception="[new BusinessRuleException(&quot;No template file to process!&quot;)]" sap:VirtualizedContainerService.HintSize="200,22" sap2010:WorkflowViewState.IdRef="Throw_1" />
+        </If.Else>
+      </If>
+      <If Condition="[Now.AddMonths(-1).AddDays(-1).ToString(&quot;MM&quot;) = &quot;01&quot;]" DisplayName="If month is January" sap:VirtualizedContainerService.HintSize="1038,1336" sap2010:WorkflowViewState.IdRef="If_11">
+        <sap:WorkflowViewStateService.ViewState>
+          <scg:Dictionary x:TypeArguments="x:String, x:Object">
+            <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+            <x:Boolean x:Key="IsPinned">False</x:Boolean>
+          </scg:Dictionary>
+        </sap:WorkflowViewStateService.ViewState>
+        <If.Then>
+          <Sequence sap:VirtualizedContainerService.HintSize="689,1188" sap2010:WorkflowViewState.IdRef="Sequence_19">
+            <sap:WorkflowViewStateService.ViewState>
+              <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+              </scg:Dictionary>
+            </sap:WorkflowViewStateService.ViewState>
+            <Assign DisplayName="Assign Template Copy" sap:VirtualizedContainerService.HintSize="647,60" sap2010:WorkflowViewState.IdRef="Assign_9">
+              <Assign.To>
+                <OutArgument x:TypeArguments="x:String">[FileTemplateCopy]</OutArgument>
+              </Assign.To>
+              <Assign.Value>
+                <InArgument x:TypeArguments="x:String">[Path.Combine(in_Config("Templates_BackUp").ToString, Now.AddMonths(-1).AddDays(-1).ToString("yyyy"), Path.GetFileName(FileTemplate))]</InArgument>
+              </Assign.Value>
+            </Assign>
+            <ui:MoveFile ContinueOnError="{x:Null}" Destination="[Path.Combine(in_Config(&quot;Templates_BackUp&quot;).ToString, Now.AddMonths(-1).AddDays(-1).ToString(&quot;yyyy&quot;), Path.GetFileName(FileTemplate))]" DisplayName="Move File" sap:VirtualizedContainerService.HintSize="647,22" sap2010:WorkflowViewState.IdRef="MoveFile_2" Overwrite="True" Path="[FileTemplate]" />
+            <ui:ExcelApplicationScope Password="{x:Null}" AutoSave="False" CreateNewFile="False" DisplayName="Excel Application Scope" sap:VirtualizedContainerService.HintSize="647,934" sap2010:WorkflowViewState.IdRef="ExcelApplicationScope_3" WorkbookPath="[in_Config(&quot;Manu_Control_Sheet&quot;).ToString]">
+              <ui:ExcelApplicationScope.Body>
+                <ActivityAction x:TypeArguments="ui:WorkbookApplication">
+                  <ActivityAction.Argument>
+                    <DelegateInArgument x:TypeArguments="ui:WorkbookApplication" Name="ExcelWorkbookScope" />
+                  </ActivityAction.Argument>
+                  <Sequence DisplayName="Process Control" sap:VirtualizedContainerService.HintSize="613,825" sap2010:WorkflowViewState.IdRef="Sequence_18">
+                    <Sequence.Variables>
+                      <Variable x:TypeArguments="scg:List(x:String)" Name="ListControlSheets" />
+                      <Variable x:TypeArguments="sd:DataTable" Name="ControlDT" />
+                      <Variable x:TypeArguments="x:Int32" Name="index" />
+                    </Sequence.Variables>
+                    <sap:WorkflowViewStateService.ViewState>
+                      <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                        <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                      </scg:Dictionary>
+                    </sap:WorkflowViewStateService.ViewState>
+                    <ui:ExcelGetWorkbookSheets DisplayName="Get Workbook Sheets" sap:VirtualizedContainerService.HintSize="571,22" sap2010:WorkflowViewState.IdRef="ExcelGetWorkbookSheets_3" Sheets="[ListControlSheets]" />
+                    <ui:ExcelReadRange AddHeaders="True" DataTable="[ControlDT]" DisplayName="Read Range" sap:VirtualizedContainerService.HintSize="571,59" sap2010:WorkflowViewState.IdRef="ExcelReadRange_5" SheetName="[ListControlSheets.First]">
+                      <ui:ExcelReadRange.Range>
+                        <InArgument x:TypeArguments="x:String">
+                          <Literal x:TypeArguments="x:String" Value="" />
+                        </InArgument>
+                      </ui:ExcelReadRange.Range>
+                    </ui:ExcelReadRange>
+                    <ui:ForEachRow CurrentIndex="[index]" DataTable="[ControlDT]" DisplayName="For Each Row" sap:VirtualizedContainerService.HintSize="571,572" sap2010:WorkflowViewState.IdRef="ForEachRow_4">
+                      <ui:ForEachRow.Body>
+                        <ActivityAction x:TypeArguments="sd:DataRow">
+                          <ActivityAction.Argument>
+                            <DelegateInArgument x:TypeArguments="sd:DataRow" Name="row" />
+                          </ActivityAction.Argument>
+                          <If Condition="[Path.GetFileName(FileTemplate).Contains(row(&quot;Factory&quot;).ToString)]" DisplayName="If row match with fileTemplate" sap:VirtualizedContainerService.HintSize="521,425" sap2010:WorkflowViewState.IdRef="If_10">
+                            <If.Then>
+                              <Sequence DisplayName="Process" sap:VirtualizedContainerService.HintSize="376,278" sap2010:WorkflowViewState.IdRef="Sequence_17">
+                                <Sequence.Variables>
+                                  <Variable x:TypeArguments="x:String" Name="FileTemplateNewYear" />
+                                </Sequence.Variables>
+                                <sap:WorkflowViewStateService.ViewState>
+                                  <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                                    <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                                  </scg:Dictionary>
+                                </sap:WorkflowViewStateService.ViewState>
+                                <ui:Replace BuilderPattern="[\d]{4}*" sap:VirtualizedContainerService.HintSize="334,59" sap2010:WorkflowViewState.IdRef="Replace_2" Input="[Path.GetFileName(FileTemplate)]" IsBuilderTabModified="True" Model="[{&quot;Index&quot;:0,&quot;OperationID&quot;:&quot;ADV&quot;,&quot;OperationName&quot;:&quot;Advanced&quot;,&quot;OperationValue&quot;:&quot;[\\d]{4}*&quot;,&quot;QuantifierFirstValue&quot;:&quot;1&quot;,&quot;QuantifierID&quot;:&quot;EXT&quot;,&quot;QuantifierName&quot;:&quot;Exactly&quot;,&quot;QuantifierSecondValue&quot;:null}]" Pattern="[0-9]{4}" RegexOption="IgnoreCase" Replacement="[Now.Year.ToString]" Result="[FileTemplateNewYear]" />
+                                <ui:ExcelWriteCell Cell="[&quot;A&quot; + index.ToString]" DisplayName="Write Template File" sap:VirtualizedContainerService.HintSize="334,87" sap2010:WorkflowViewState.IdRef="ExcelWriteCell_4" SheetName="[ListControlSheets.First]" Text="[Path.GetFileName(FileTemplate)]" />
+                              </Sequence>
+                            </If.Then>
+                          </If>
+                        </ActivityAction>
+                      </ui:ForEachRow.Body>
+                    </ui:ForEachRow>
+                  </Sequence>
+                </ActivityAction>
+              </ui:ExcelApplicationScope.Body>
+              <sap:WorkflowViewStateService.ViewState>
+                <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                  <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                  <x:Boolean x:Key="IsPinned">False</x:Boolean>
+                </scg:Dictionary>
+              </sap:WorkflowViewStateService.ViewState>
+            </ui:ExcelApplicationScope>
+          </Sequence>
+        </If.Then>
+        <If.Else>
+          <Sequence DisplayName="Do Repeat" sap:VirtualizedContainerService.HintSize="304,214" sap2010:WorkflowViewState.IdRef="Sequence_21">
+            <sap:WorkflowViewStateService.ViewState>
+              <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+              </scg:Dictionary>
+            </sap:WorkflowViewStateService.ViewState>
+            <Assign DisplayName="Assign Template Copy" sap:VirtualizedContainerService.HintSize="262,60" sap2010:WorkflowViewState.IdRef="Assign_10">
+              <Assign.To>
+                <OutArgument x:TypeArguments="x:String">[FileTemplateCopy]</OutArgument>
+              </Assign.To>
+              <Assign.Value>
+                <InArgument x:TypeArguments="x:String">[Path.Combine(in_Config("Templates_BackUp").ToString, Now.AddMonths(-1).AddDays(-1).ToString("yyyy"), Path.GetFileName(FileTemplate))]</InArgument>
+              </Assign.Value>
+            </Assign>
+            <ui:CopyFile ContinueOnError="{x:Null}" Destination="[Path.Combine(in_Config(&quot;Templates_BackUp&quot;).ToString, Now.ToString(&quot;yyyy&quot;), Path.GetFileName(FileTemplate))]" DisplayName="Copy File" sap:VirtualizedContainerService.HintSize="262,22" sap2010:WorkflowViewState.IdRef="CopyFile_2" Overwrite="True" Path="[FileTemplate]" />
+          </Sequence>
+        </If.Else>
+      </If>
+    </Sequence>
+    <ui:ExcelApplicationScope Password="{x:Null}" AutoSave="False" CreateNewFile="False" DisplayName="Excel Application Scope" sap:VirtualizedContainerService.HintSize="1644,3445" sap2010:WorkflowViewState.IdRef="ExcelApplicationScope_1" WorkbookPath="[FileTemplateCopy]">
+      <ui:ExcelApplicationScope.Body>
+        <ActivityAction x:TypeArguments="ui:WorkbookApplication">
+          <ActivityAction.Argument>
+            <DelegateInArgument x:TypeArguments="ui:WorkbookApplication" Name="ExcelWorkbookScope" />
+          </ActivityAction.Argument>
+          <Sequence DisplayName="Process sheet by sheet" sap:VirtualizedContainerService.HintSize="1610,3336" sap2010:WorkflowViewState.IdRef="Sequence_2">
+            <Sequence.Variables>
+              <Variable x:TypeArguments="scg:List(x:String)" Name="SheetList" />
+            </Sequence.Variables>
+            <sap:WorkflowViewStateService.ViewState>
+              <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+              </scg:Dictionary>
+            </sap:WorkflowViewStateService.ViewState>
+            <ui:ExcelGetWorkbookSheets DisplayName="Get Workbook Sheets" sap:VirtualizedContainerService.HintSize="1568,22" sap2010:WorkflowViewState.IdRef="ExcelGetWorkbookSheets_1" Sheets="[SheetList]" />
+            <ui:ForEach x:TypeArguments="x:String" CurrentIndex="{x:Null}" DisplayName="For Each" sap:VirtualizedContainerService.HintSize="1568,3120" sap2010:WorkflowViewState.IdRef="ForEach`1_1" Values="[SheetList]">
+              <ui:ForEach.Body>
+                <ActivityAction x:TypeArguments="x:String">
+                  <ActivityAction.Argument>
+                    <DelegateInArgument x:TypeArguments="x:String" Name="sheet" />
+                  </ActivityAction.Argument>
+                  <Sequence DisplayName="Do in sheet" sap:VirtualizedContainerService.HintSize="1532,2986" sap2010:WorkflowViewState.IdRef="Sequence_3">
+                    <sap:WorkflowViewStateService.ViewState>
+                      <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                        <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                      </scg:Dictionary>
+                    </sap:WorkflowViewStateService.ViewState>
+                    <ui:ExcelReadRange AddHeaders="True" DataTable="[RowCountDT]" DisplayName="Read Range &lt;For Row Count&gt;" sap:VirtualizedContainerService.HintSize="1490,59" sap2010:WorkflowViewState.IdRef="ExcelReadRange_1" SheetName="[sheet]">
+                      <ui:ExcelReadRange.Range>
+                        <InArgument x:TypeArguments="x:String">
+                          <Literal x:TypeArguments="x:String" Value="" />
+                        </InArgument>
+                      </ui:ExcelReadRange.Range>
+                    </ui:ExcelReadRange>
+                    <ui:FilterDataTable DataTable="[AccSumDT]" DisplayName="Filter Data Table &lt;Sub-CC match with sheet name&gt;" FilterRowsMode="Keep" sap:VirtualizedContainerService.HintSize="1490,59" sap2010:WorkflowViewState.IdRef="FilterDataTable_1" OutputDataTable="[FilterAccSumDT]" SelectColumnsMode="Keep">
+                      <ui:FilterDataTable.Filters>
+                        <scg:List x:TypeArguments="ui:FilterOperationArgument" Capacity="4">
+                          <ui:FilterOperationArgument BooleanOperator="And" Operator="EQ">
+                            <ui:FilterOperationArgument.Column>
+                              <InArgument x:TypeArguments="x:String">["Sub-CC"]</InArgument>
+                            </ui:FilterOperationArgument.Column>
+                            <ui:FilterOperationArgument.Operand>
+                              <InArgument x:TypeArguments="x:String">[sheet]</InArgument>
+                            </ui:FilterOperationArgument.Operand>
+                          </ui:FilterOperationArgument>
+                        </scg:List>
+                      </ui:FilterDataTable.Filters>
+                      <ui:FilterDataTable.SelectColumns>
+                        <scg:List x:TypeArguments="InArgument" Capacity="4">
+                          <x:Null />
+                        </scg:List>
+                      </ui:FilterDataTable.SelectColumns>
+                    </ui:FilterDataTable>
+                    <If Condition="[FilterAccSumDT.Rows.Count &gt;= 1]" DisplayName="If have data in row" sap:VirtualizedContainerService.HintSize="1490,2696" sap2010:WorkflowViewState.IdRef="If_2">
+                      <If.Then>
+                        <Sequence DisplayName="Process sheet with data" sap:VirtualizedContainerService.HintSize="1345,2547" sap2010:WorkflowViewState.IdRef="Sequence_4">
+                          <Sequence.Variables>
+                            <Variable x:TypeArguments="x:String" sap2010:Annotation.AnnotationText="Text from datatable of monthrow" Name="MonthRowString" />
+                            <Variable x:TypeArguments="s:String[]" sap2010:Annotation.AnnotationText="Split MonthRowString into Array" Name="MonthRowArray" />
+                            <Variable x:TypeArguments="x:Int32" Name="MonthIndexInteger" />
+                            <Variable x:TypeArguments="x:String" Name="AlphabetCellString" />
+                            <Variable x:TypeArguments="ui:GenericValue" Name="CellValueGeneric" />
+                            <Variable x:TypeArguments="x:String" Name="AlphabetCheckString" />
+                            <Variable x:TypeArguments="x:Int32" Default="0" Name="CounterInteger" />
+                            <Variable x:TypeArguments="sd:DataTable" Name="AccCodeDT" />
+                          </Sequence.Variables>
+                          <sap:WorkflowViewStateService.ViewState>
+                            <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                              <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                            </scg:Dictionary>
+                          </sap:WorkflowViewStateService.ViewState>
+                          <ui:ExcelReadRange AddHeaders="True" DataTable="[MonthRowDT]" DisplayName="Read Range &lt;For get month row&gt;" sap:VirtualizedContainerService.HintSize="1303,59" sap2010:WorkflowViewState.IdRef="ExcelReadRange_2" Range="A5:CA5" SheetName="[sheet]" />
+                          <ui:OutputDataTable DataTable="[MonthRowDT]" DisplayName="Output Data Table" sap:VirtualizedContainerService.HintSize="1303,22" sap2010:WorkflowViewState.IdRef="OutputDataTable_1" Text="[MonthRowString]" />
+                          <Assign DisplayName="MonthRow Split" sap:VirtualizedContainerService.HintSize="1303,60" sap2010:WorkflowViewState.IdRef="Assign_2">
+                            <Assign.To>
+                              <OutArgument x:TypeArguments="s:String[]">[MonthRowArray]</OutArgument>
+                            </Assign.To>
+                            <Assign.Value>
+                              <InArgument x:TypeArguments="s:String[]">[Split(MonthRowString,",")]</InArgument>
+                            </Assign.Value>
+                          </Assign>
+                          <ui:ForEach x:TypeArguments="x:String" CurrentIndex="[MonthIndexInteger]" DisplayName="For Each" sap:VirtualizedContainerService.HintSize="1303,2194" sap2010:WorkflowViewState.IdRef="ForEach`1_3" Values="[MonthRowArray]">
+                            <ui:ForEach.Body>
+                              <ActivityAction x:TypeArguments="x:String">
+                                <ActivityAction.Argument>
+                                  <DelegateInArgument x:TypeArguments="x:String" Name="item" />
+                                </ActivityAction.Argument>
+                                <If Condition="[item = MonthName(Cint(reportMonth.Month.ToString)).Substring(0,3)]" DisplayName="If &lt;MonthName is match&gt;" sap:VirtualizedContainerService.HintSize="1267,2060" sap2010:WorkflowViewState.IdRef="If_3">
+                                  <If.Then>
+                                    <Sequence DisplayName="Mapping Column Excel Process" sap:VirtualizedContainerService.HintSize="1122,1911" sap2010:WorkflowViewState.IdRef="Sequence_5">
+                                      <sap:WorkflowViewStateService.ViewState>
+                                        <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                                          <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                                        </scg:Dictionary>
+                                      </sap:WorkflowViewStateService.ViewState>
+                                      <ui:InvokeWorkflowFile ContinueOnError="{x:Null}" DisplayName="Invoke ExcelColumnAlphabetMapping workflow" sap:VirtualizedContainerService.HintSize="1080,87" sap2010:WorkflowViewState.IdRef="InvokeWorkflowFile_1" UnSafe="False" WorkflowFileName="Subprocess\ExcelColumnAlphabetMapping.xaml">
+                                        <ui:InvokeWorkflowFile.Arguments>
+                                          <InArgument x:TypeArguments="x:Int32" x:Key="in_Column_Number">[MonthIndexInteger + 1]</InArgument>
+                                          <OutArgument x:TypeArguments="x:String" x:Key="out_Column_Name">[AlphabetCellString]</OutArgument>
+                                        </ui:InvokeWorkflowFile.Arguments>
+                                      </ui:InvokeWorkflowFile>
+                                      <ui:ExcelReadCell Cell="[AlphabetCellString + &quot;6&quot;]" DisplayName="Read Cell" sap:VirtualizedContainerService.HintSize="1080,59" sap2010:WorkflowViewState.IdRef="ExcelReadCell_1" SheetName="[sheet]">
+                                        <ui:ExcelReadCell.Result>
+                                          <OutArgument x:TypeArguments="ui:GenericValue">[CellValueGeneric]</OutArgument>
+                                        </ui:ExcelReadCell.Result>
+                                      </ui:ExcelReadCell>
+                                      <Switch x:TypeArguments="x:String" DisplayName="Switch &lt;Alphabet Cell match with column &gt;" Expression="[CellValueGeneric.ToString]" sap:VirtualizedContainerService.HintSize="1080,186" sap2010:WorkflowViewState.IdRef="Switch`1_1">
+                                        <sap:WorkflowViewStateService.ViewState>
+                                          <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                                            <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                                            <x:Boolean x:Key="IsPinned">False</x:Boolean>
+                                          </scg:Dictionary>
+                                        </sap:WorkflowViewStateService.ViewState>
+                                        <Sequence x:Key="Actual" DisplayName="Actual Match" sap:VirtualizedContainerService.HintSize="376,281" sap2010:WorkflowViewState.IdRef="Sequence_6">
+                                          <sap:WorkflowViewStateService.ViewState>
+                                            <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                                              <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                                            </scg:Dictionary>
+                                          </sap:WorkflowViewStateService.ViewState>
+                                          <ui:InvokeWorkflowFile ContinueOnError="{x:Null}" DisplayName="Invoke ExcelColumnAlphabetMapping workflow" sap:VirtualizedContainerService.HintSize="343,87" sap2010:WorkflowViewState.IdRef="InvokeWorkflowFile_2" UnSafe="False" WorkflowFileName="Subprocess\ExcelColumnAlphabetMapping.xaml">
+                                            <ui:InvokeWorkflowFile.Arguments>
+                                              <InArgument x:TypeArguments="x:Int32" x:Key="in_Column_Number">[MonthIndexInteger + 1]</InArgument>
+                                              <OutArgument x:TypeArguments="x:String" x:Key="out_Column_Name">[AlphabetCellString]</OutArgument>
+                                            </ui:InvokeWorkflowFile.Arguments>
+                                          </ui:InvokeWorkflowFile>
+                                          <Assign DisplayName="Assign Cell Match" sap:VirtualizedContainerService.HintSize="343,60" sap2010:WorkflowViewState.IdRef="Assign_4">
+                                            <Assign.To>
+                                              <OutArgument x:TypeArguments="x:String">[AlphabetCheckString]</OutArgument>
+                                            </Assign.To>
+                                            <Assign.Value>
+                                              <InArgument x:TypeArguments="x:String">[AlphabetCellString]</InArgument>
+                                            </Assign.Value>
+                                          </Assign>
+                                        </Sequence>
+                                        <Sequence x:Key="Budget" DisplayName="Budget Match" sap:VirtualizedContainerService.HintSize="376,281" sap2010:WorkflowViewState.IdRef="Sequence_7">
+                                          <sap:WorkflowViewStateService.ViewState>
+                                            <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                                              <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                                            </scg:Dictionary>
+                                          </sap:WorkflowViewStateService.ViewState>
+                                          <ui:InvokeWorkflowFile ContinueOnError="{x:Null}" DisplayName="Invoke ExcelColumnAlphabetMapping workflow" sap:VirtualizedContainerService.HintSize="343,87" sap2010:WorkflowViewState.IdRef="InvokeWorkflowFile_3" UnSafe="False" WorkflowFileName="Subprocess\ExcelColumnAlphabetMapping.xaml">
+                                            <ui:InvokeWorkflowFile.Arguments>
+                                              <InArgument x:TypeArguments="x:Int32" x:Key="in_Column_Number">[MonthIndexInteger + 2]</InArgument>
+                                              <OutArgument x:TypeArguments="x:String" x:Key="out_Column_Name">[AlphabetCellString]</OutArgument>
+                                            </ui:InvokeWorkflowFile.Arguments>
+                                          </ui:InvokeWorkflowFile>
+                                          <Assign DisplayName="Assign Cell Match" sap:VirtualizedContainerService.HintSize="343,60" sap2010:WorkflowViewState.IdRef="Assign_5">
+                                            <Assign.To>
+                                              <OutArgument x:TypeArguments="x:String">[AlphabetCheckString]</OutArgument>
+                                            </Assign.To>
+                                            <Assign.Value>
+                                              <InArgument x:TypeArguments="x:String">[AlphabetCellString]</InArgument>
+                                            </Assign.Value>
+                                          </Assign>
+                                        </Sequence>
+                                        <Sequence x:Key="Diff" DisplayName="Diff Match" sap:VirtualizedContainerService.HintSize="376,281" sap2010:WorkflowViewState.IdRef="Sequence_8">
+                                          <sap:WorkflowViewStateService.ViewState>
+                                            <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                                              <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                                            </scg:Dictionary>
+                                          </sap:WorkflowViewStateService.ViewState>
+                                          <ui:InvokeWorkflowFile ContinueOnError="{x:Null}" DisplayName="Invoke ExcelColumnAlphabetMapping workflow" sap:VirtualizedContainerService.HintSize="343,87" sap2010:WorkflowViewState.IdRef="InvokeWorkflowFile_4" UnSafe="False" WorkflowFileName="Subprocess\ExcelColumnAlphabetMapping.xaml">
+                                            <ui:InvokeWorkflowFile.Arguments>
+                                              <InArgument x:TypeArguments="x:Int32" x:Key="in_Column_Number">[MonthIndexInteger]</InArgument>
+                                              <OutArgument x:TypeArguments="x:String" x:Key="out_Column_Name">[AlphabetCellString]</OutArgument>
+                                            </ui:InvokeWorkflowFile.Arguments>
+                                          </ui:InvokeWorkflowFile>
+                                          <Assign DisplayName="Assign Cell Match" sap:VirtualizedContainerService.HintSize="343,60" sap2010:WorkflowViewState.IdRef="Assign_6">
+                                            <Assign.To>
+                                              <OutArgument x:TypeArguments="x:String">[AlphabetCheckString]</OutArgument>
+                                            </Assign.To>
+                                            <Assign.Value>
+                                              <InArgument x:TypeArguments="x:String">[AlphabetCellString]</InArgument>
+                                            </Assign.Value>
+                                          </Assign>
+                                        </Sequence>
+                                      </Switch>
+                                      <ui:InvokeWorkflowFile ContinueOnError="{x:Null}" DisplayName="Invoke ExcelColumnAlphabetMapping workflow" sap:VirtualizedContainerService.HintSize="1080,87" sap2010:WorkflowViewState.IdRef="InvokeWorkflowFile_5" UnSafe="False" WorkflowFileName="Subprocess\ExcelColumnAlphabetMapping.xaml">
+                                        <ui:InvokeWorkflowFile.Arguments>
+                                          <InArgument x:TypeArguments="x:Int32" x:Key="in_Column_Number">[RowCountDT.Columns.Count]</InArgument>
+                                          <OutArgument x:TypeArguments="x:String" x:Key="out_Column_Name">[AlphabetCellString]</OutArgument>
+                                        </ui:InvokeWorkflowFile.Arguments>
+                                      </ui:InvokeWorkflowFile>
+                                      <DoWhile DisplayName="Do While &lt;Input to end of row&gt;" sap:VirtualizedContainerService.HintSize="1080,1240" sap2010:WorkflowViewState.IdRef="DoWhile_1" Condition="[CounterInteger &lt; RowCountDT.Rows.Count]">
+                                        <Sequence DisplayName="Input Data" sap:VirtualizedContainerService.HintSize="1034,1077" sap2010:WorkflowViewState.IdRef="Sequence_9">
+                                          <sap:WorkflowViewStateService.ViewState>
+                                            <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                                              <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                                            </scg:Dictionary>
+                                          </sap:WorkflowViewStateService.ViewState>
+                                          <ui:ExcelReadRange AddHeaders="False" DataTable="[AccCodeDT]" DisplayName="Read Every Row" sap:VirtualizedContainerService.HintSize="992,59" sap2010:WorkflowViewState.IdRef="ExcelReadRange_3" Range="[&quot;A&quot; + (7 + CounterInteger).ToString + &quot;:&quot; + AlphabetCellString + (7 + CounterInteger).ToString]" SheetName="[sheet]" />
+                                          <ui:ForEachRow CurrentIndex="{x:Null}" DataTable="[FilterAccSumDT]" DisplayName="For Each &lt;FilterAccSumDT &gt;" sap:VirtualizedContainerService.HintSize="992,786" sap2010:WorkflowViewState.IdRef="ForEachRow_1">
+                                            <ui:ForEachRow.Body>
+                                              <ActivityAction x:TypeArguments="sd:DataRow">
+                                                <ActivityAction.Argument>
+                                                  <DelegateInArgument x:TypeArguments="sd:DataRow" Name="row" />
+                                                </ActivityAction.Argument>
+                                                <If Condition="[row(0).ToString = AccCodeDT.Rows(0)(1).ToString]" DisplayName="If match with account code" sap:VirtualizedContainerService.HintSize="942,638" sap2010:WorkflowViewState.IdRef="If_5">
+                                                  <If.Then>
+                                                    <If Condition="[AccCodeDT.Rows(0)(1).ToString = &quot;51313&quot;]" DisplayName="If account code is 51313" sap:VirtualizedContainerService.HintSize="797,489" sap2010:WorkflowViewState.IdRef="If_4">
+                                                      <If.Then>
+                                                        <Sequence DisplayName="Process Then" sap:VirtualizedContainerService.HintSize="376,340" sap2010:WorkflowViewState.IdRef="Sequence_10">
+                                                          <sap:WorkflowViewStateService.ViewState>
+                                                            <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                                                              <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                                                            </scg:Dictionary>
+                                                          </sap:WorkflowViewStateService.ViewState>
+                                                          <ui:ExcelSelectRange DisplayName="Select Range" sap:VirtualizedContainerService.HintSize="334,59" sap2010:WorkflowViewState.IdRef="ExcelSelectRange_1" Range="[AlphabetCheckString + (7+CounterInteger).ToString]" SheetName="[sheet]" />
+                                                          <ui:ExcelWriteCell Cell="[AlphabetCheckString + (7+CounterInteger).ToString]" DisplayName="Write 0 in 51313 in present month" sap:VirtualizedContainerService.HintSize="334,87" sap2010:WorkflowViewState.IdRef="ExcelWriteCell_1" SheetName="[sheet]" Text="0" />
+                                                          <ui:Break sap:VirtualizedContainerService.HintSize="334,22" sap2010:WorkflowViewState.IdRef="Break_1" />
+                                                        </Sequence>
+                                                      </If.Then>
+                                                      <If.Else>
+                                                        <Sequence DisplayName="Process Else" sap:VirtualizedContainerService.HintSize="376,340" sap2010:WorkflowViewState.IdRef="Sequence_11">
+                                                          <sap:WorkflowViewStateService.ViewState>
+                                                            <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                                                              <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                                                            </scg:Dictionary>
+                                                          </sap:WorkflowViewStateService.ViewState>
+                                                          <ui:ExcelSelectRange DisplayName="Select Range" sap:VirtualizedContainerService.HintSize="334,59" sap2010:WorkflowViewState.IdRef="ExcelSelectRange_2" Range="[AlphabetCheckString + (7+CounterInteger).ToString]" SheetName="[sheet]" />
+                                                          <ui:ExcelWriteCell Cell="[AlphabetCheckString + (7+CounterInteger).ToString]" DisplayName="Write data to Cell" sap:VirtualizedContainerService.HintSize="334,87" sap2010:WorkflowViewState.IdRef="ExcelWriteCell_2" SheetName="[sheet]" Text="[row(4).ToString]" />
+                                                          <ui:Break sap:VirtualizedContainerService.HintSize="334,22" sap2010:WorkflowViewState.IdRef="Break_2" />
+                                                        </Sequence>
+                                                      </If.Else>
+                                                    </If>
+                                                  </If.Then>
+                                                </If>
+                                              </ActivityAction>
+                                            </ui:ForEachRow.Body>
+                                          </ui:ForEachRow>
+                                          <Assign DisplayName="Counter Increment" sap:VirtualizedContainerService.HintSize="992,60" sap2010:WorkflowViewState.IdRef="Assign_7">
+                                            <Assign.To>
+                                              <OutArgument x:TypeArguments="x:Int32">[CounterInteger]</OutArgument>
+                                            </Assign.To>
+                                            <Assign.Value>
+                                              <InArgument x:TypeArguments="x:Int32">[CounterInteger + 1]</InArgument>
+                                            </Assign.Value>
+                                          </Assign>
+                                        </Sequence>
+                                      </DoWhile>
+                                    </Sequence>
+                                  </If.Then>
+                                </If>
+                              </ActivityAction>
+                            </ui:ForEach.Body>
+                          </ui:ForEach>
+                        </Sequence>
+                      </If.Then>
+                    </If>
+                  </Sequence>
+                </ActivityAction>
+              </ui:ForEach.Body>
+            </ui:ForEach>
+            <ui:ExcelSaveWorkbook DisplayName="Save Workbook" sap:VirtualizedContainerService.HintSize="1568,22" sap2010:WorkflowViewState.IdRef="ExcelSaveWorkbook_1" />
+          </Sequence>
+        </ActivityAction>
+      </ui:ExcelApplicationScope.Body>
+      <sap:WorkflowViewStateService.ViewState>
+        <scg:Dictionary x:TypeArguments="x:String, x:Object">
+          <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+          <x:Boolean x:Key="IsPinned">False</x:Boolean>
+        </scg:Dictionary>
+      </sap:WorkflowViewStateService.ViewState>
+    </ui:ExcelApplicationScope>
+  </Sequence>
+</Activity>
